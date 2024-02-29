@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -37,6 +39,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalConfiguration
@@ -47,7 +50,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import commons.Constants.CONTACTS_HEADER_TEXT
 import commons.Constants.DEFAULT_ERROR_MSG
+import commons.Constants.EMPTY_STRING
 import entity.Friend
 import feature.INetworkInteract
 import org.example.project.interactor.NetworkInteract
@@ -60,9 +65,9 @@ class NetworkActivity : ComponentActivity(), INetworkView {
     }
 
     private var isContactsLoading = mutableStateOf(false)
-    private var errorMsg = mutableStateOf("")
+    private var errorMsg = mutableStateOf(EMPTY_STRING)
     private var friendMutableList: MutableList<Friend> = mutableStateListOf()
-    private var headerText = mutableStateOf("")
+    private var headerText = mutableStateOf(EMPTY_STRING)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,14 +75,23 @@ class NetworkActivity : ComponentActivity(), INetworkView {
         requestPermission()
 
         setContent {
+            Column {
+                LazyColumn(modifier = Modifier.background(color = Color.LightGray, shape = RectangleShape)) {
+                    item {
+                        Text("Grupo teste")
+                        Image()
+                    }
+                }
+            }
             Box(Modifier.fillMaxSize()) {
-                Text("Teste teste")
+
+
                 LoadingColumnList(showLoadingSkeleton = isContactsLoading.value)
                 FriendListComponent(
                     headerText = headerText.value,
                     friendList = friendMutableList.toList()
                 )
-                ErrorStateColumnList(errorMsg = errorMsg.value)
+                ErrorStateColumnList( errorMsg = errorMsg.value)
             }
         }
     }
@@ -88,11 +102,9 @@ class NetworkActivity : ComponentActivity(), INetworkView {
     }
 
     override fun fillNetworkComponent(mutableListFriend: MutableList<Friend>) {
-        showLoadingScreen()
-
-        /*isContactsLoading.value = false
-        headerText.value = "Select any friends you want do add to a group"
-        friendMutableList.addAll(mutableListFriend)*/
+        isContactsLoading.value = false
+        headerText.value = CONTACTS_HEADER_TEXT
+        friendMutableList.addAll(mutableListFriend)
     }
 
     override fun showErrorScreen(errorMsg: String) {
@@ -186,19 +198,25 @@ fun HorizontalFriendListStructure(
 @Composable
 fun ErrorStateColumnList(modifier: Modifier = Modifier, errorMsg: String) {
     if (errorMsg.isNotEmpty()) {
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Box(contentAlignment = Alignment.Center) {
                 val fillWidthItemsCount = splitMaxScreenWidthByItems(70f)
-                LazyRowFilling(count = fillWidthItemsCount, text = "!")
+                LazyRowFilling(
+                    textModifier = Modifier.background(
+                        color = Color.Red,
+                        shape = RoundedCornerShape(12.dp)
+                    ), columnModifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp)),  count = fillWidthItemsCount, text = "!"
+                )
 
                 Column(
                     Modifier.matchParentSize()
-                        .background(color = Color.Black.copy(alpha = 0.60f)),
+                        .background(color = Color.Black.copy(alpha = 0.70f)),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = errorMsg,
                         modifier = Modifier.fillMaxWidth(),
+                        color = Color.LightGray,
                         textAlign = TextAlign.Center,
                         fontSize = TextUnit(value = 20f, type = TextUnitType.Sp),
                         fontWeight = FontWeight.Bold,
@@ -213,16 +231,19 @@ fun ErrorStateColumnList(modifier: Modifier = Modifier, errorMsg: String) {
 }
 
 @Composable
-fun LazyRowFilling(modifier: Modifier = Modifier, count: Int, text: String = "") {
+fun LazyRowFilling(
+    textModifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
+    count: Int,
+    text: String = ""
+) {
     LazyRow(Modifier.padding(12.dp).fillMaxWidth()) {
         items(count) {
             Column(
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color.LightGray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                Column(
+                    modifier = Modifier.align(Alignment.CenterHorizontally).then(columnModifier)
                 ) {
                     Text(
                         text = text,
@@ -231,8 +252,7 @@ fun LazyRowFilling(modifier: Modifier = Modifier, count: Int, text: String = "")
                         maxLines = 1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
-                            .background(color = Color.Red, shape = RoundedCornerShape(12.dp))
-                            .defaultMinSize(minWidth = 20.dp)
+                            .defaultMinSize(minWidth = 20.dp).then(textModifier)
                     )
                 }
                 Text(
@@ -241,7 +261,7 @@ fun LazyRowFilling(modifier: Modifier = Modifier, count: Int, text: String = "")
                     minLines = 2,
                     maxLines = 2,
                     textAlign = TextAlign.Center,
-                    modifier = modifier.fillParentMaxWidth(0.2f)
+                    modifier = Modifier.fillParentMaxWidth(0.2f)
                         .padding(horizontal = 4.dp),
                     overflow = TextOverflow.Ellipsis
                 )
@@ -253,9 +273,14 @@ fun LazyRowFilling(modifier: Modifier = Modifier, count: Int, text: String = "")
 @Composable
 fun LoadingColumnList(modifier: Modifier = Modifier, showLoadingSkeleton: Boolean = true) {
     if (showLoadingSkeleton) {
-        Column(verticalArrangement = Arrangement.Bottom) {
-            LazyRowFilling(count = splitMaxScreenWidthByItems(70f))
-    }
+        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+            Box(contentAlignment = Alignment.Center) {
+                LazyRowFilling(
+                    columnModifier = Modifier.shimmerBackground(),
+                    count = splitMaxScreenWidthByItems(70f)
+                )
+            }
+        }
     }
 }
 
@@ -272,36 +297,31 @@ fun getScreenWidth(): Float {
 
 @Composable
 fun Modifier.shimmerBackground(
-    showBackgroundLoading: Boolean = true,
     shape: Shape = RoundedCornerShape(12.dp)
 ): Modifier = composed {
-    if (showBackgroundLoading) {
-        val transition = rememberInfiniteTransition(label = "")
+    val transition = rememberInfiniteTransition(label = "")
 
-        val translateAnimation by transition.animateFloat(
-            initialValue = 0f,
-            targetValue = 400f,
-            animationSpec = infiniteRepeatable(
-                tween(durationMillis = 1500, easing = LinearOutSlowInEasing),
-                RepeatMode.Restart
-            ),
-            label = "Loading translate",
-        )
-        val shimmerColors = listOf(
-            Color.LightGray.copy(alpha = 0.9f),
-            Color.LightGray.copy(alpha = 0.3f),
-            Color.LightGray.copy(alpha = 0.9f),
-            Color.LightGray.copy(alpha = 0.9f),
-            Color.LightGray.copy(alpha = 0.9f),
-        )
-        val brush = Brush.linearGradient(
-            colors = shimmerColors,
-            start = Offset(translateAnimation, translateAnimation),
-            end = Offset(translateAnimation + 100f, translateAnimation + 100f),
-            tileMode = TileMode.Mirror,
-        )
-        return@composed this.then(background(brush, shape))
-    } else {
-        return@composed this
-    }
+    val translateAnimation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 400f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1500, easing = LinearOutSlowInEasing),
+            RepeatMode.Restart
+        ),
+        label = "Loading translate",
+    )
+    val shimmerColors = listOf(
+        Color.LightGray.copy(alpha = 0.9f),
+        Color.LightGray.copy(alpha = 0.3f),
+        Color.LightGray.copy(alpha = 0.9f),
+        Color.LightGray.copy(alpha = 0.9f),
+        Color.LightGray.copy(alpha = 0.9f),
+    )
+    val brush = Brush.linearGradient(
+        colors = shimmerColors,
+        start = Offset(translateAnimation, translateAnimation),
+        end = Offset(translateAnimation + 100f, translateAnimation + 100f),
+        tileMode = TileMode.Mirror,
+    )
+    return@composed this.then(background(brush, shape))
 }
