@@ -25,6 +25,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation ("androidx.compose.material:material-icons-extended:1.6.2")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
