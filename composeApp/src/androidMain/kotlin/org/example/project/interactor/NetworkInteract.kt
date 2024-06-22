@@ -17,8 +17,8 @@ class NetworkInteract(view: INetworkView, private val context: ComponentActivity
     private val repository: INetworkRepository = NetworkRepository(context.contentResolver)
 
     override fun retrieveContractList() {
-        val callback: Callback<MutableList<Friend>> = object : Callback<MutableList<Friend>>{
-            override fun onSuccess(result: MutableList<Friend>) {
+        val callback: Callback<List<Friend>> = object : Callback<List<Friend>>{
+            override fun onSuccess(result: List<Friend>) {
                 presenter.fillNetworkComponent(result)
             }
 
@@ -31,7 +31,7 @@ class NetworkInteract(view: INetworkView, private val context: ComponentActivity
         requestReadContactPermission(callback)
     }
 
-    private fun requestReadContactPermission(callback: Callback<MutableList<Friend>>){
+    private fun requestReadContactPermission(callback: Callback<List<Friend>>){
         PermissionUtils.requestPermissionLauncher(context, object : Callback<String>{
             override fun onSuccess(result: String) {
                 requestContractList(callback)
@@ -43,7 +43,7 @@ class NetworkInteract(view: INetworkView, private val context: ComponentActivity
         }).launch(Manifest.permission.READ_CONTACTS)
     }
 
-    private fun requestContractList(callback: Callback<MutableList<Friend>>){
+    private fun requestContractList(callback: Callback<List<Friend>>){
         runCatching {
             repository.sendContactQuery(callback)
         }.onFailure {

@@ -3,15 +3,13 @@ package org.example.project.domain
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.database.Cursor
-import android.os.Build
 import android.provider.ContactsContract
-import androidx.annotation.RequiresApi
 import commons.domain.Callback
 import entity.Friend
 import extensions.Extensions.getAlias
 import feature.domain.INetworkRepository
 
-class NetworkRepository(private val contentResolver: ContentResolver) : INetworkRepository {
+class NetworkRepository(private val contentResolver: ContentResolver? = null) : INetworkRepository {
 
     @SuppressLint("InlinedApi")
     private val PROJECTION: Array<out String> = arrayOf(
@@ -25,10 +23,16 @@ class NetworkRepository(private val contentResolver: ContentResolver) : INetwork
         ContactsContract.Data.DATA1
     )
 
+    override fun getContacts() : ArrayList<Friend> {
+        return arrayListOf(Friend("Jao", "1102020202", "JC"),
+            Friend("Ssd", "222222", "DS"),
+            Friend("dsad", "2222", "AS"))
+    }
 
-    override fun sendContactQuery(callback: Callback<MutableList<Friend>>) {
+
+    override fun sendContactQuery(callback: Callback<List<Friend>>) {
         val phones: Cursor? =
-            contentResolver.query(
+            contentResolver?.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 PROJECTION,
                 null,

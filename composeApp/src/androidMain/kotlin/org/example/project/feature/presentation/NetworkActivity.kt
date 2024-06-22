@@ -1,67 +1,43 @@
-package org.example.project
+package org.example.project.feature.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Contacts
-import androidx.compose.material.icons.filled.NaturePeople
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.PeopleAlt
-import androidx.compose.material.icons.filled.PeopleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -71,63 +47,29 @@ import entity.Friend
 import feature.INetworkInteract
 import org.example.project.interactor.NetworkInteract
 import feature.presentation.INetworkView
+import org.example.project.common.presentation.components.FriendListComponentState
+import org.example.project.feature.viewmodel.FriendListViewModel
 
 class NetworkActivity : ComponentActivity(), INetworkView {
     private val interact: INetworkInteract by lazy {
         NetworkInteract(this, this)
     }
+    private val componentViewModel: FriendListViewModel by viewModels()
 
     private var isContactsLoading = mutableStateOf(false)
     private var errorMsg = mutableStateOf(EMPTY_STRING)
-    private var friendMutableList: MutableList<Friend> = mutableStateListOf()
-    private var headerText = mutableStateOf(EMPTY_STRING)
+
+    private val friendListState = FriendListComponentState()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestPermission()
 
+        //val state = FriendListComponentState(headerText, friendMutableList)
+
         setContent {
-            Column {
-                Column (Modifier.fillMaxHeight(0.8f)) {
-                    LazyVerticalStaggeredGrid(
-                        columns = StaggeredGridCells.Fixed(3),
-                        verticalItemSpacing = 16.dp,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp)
-
-                    ) {
-                        items(27) {
-                            Column {
-                                Text(
-                                    "Grupo teste",
-                                    modifier = Modifier.fillMaxWidth(0.8f),
-                                    textAlign = TextAlign.Center
-                                )
-                                Image(
-                                    painterResource(R.drawable.grilling_party),
-                                    "content description",
-                                    modifier = Modifier
-                                        .clip(shape = RoundedCornerShape(12.dp))
-                                        .fillMaxWidth(0.8f)
-                                )
-                                Row {
-                                    Icon(imageVector = Icons.Filled.PeopleOutline, contentDescription = null)
-                                }
-                            }
-                        }
-                    }
-                }
-                Box(Modifier.fillMaxSize()) {
-
-                    LoadingColumnList(showLoadingSkeleton = isContactsLoading.value)
-                    FriendListComponent(
-                        headerText = headerText.value,
-                        friendList = friendMutableList.toList()
-                    )
-                    ErrorStateColumnList(errorMsg = errorMsg.value)
-                }
-            }
+            UserScreen(networkViewModel = componentViewModel)
         }
     }
 
@@ -136,10 +78,10 @@ class NetworkActivity : ComponentActivity(), INetworkView {
         interact.retrieveContractList()
     }
 
-    override fun fillNetworkComponent(mutableListFriend: MutableList<Friend>) {
+    override fun fillNetworkComponent(friendList: List<Friend>) {
         isContactsLoading.value = false
-        headerText.value = CONTACTS_HEADER_TEXT
-        friendMutableList.addAll(mutableListFriend)
+//        friendListState.headerText.value = CONTACTS_HEADER_TEXT
+        friendListState.friendList.addAll(friendList)
     }
 
     override fun showErrorScreen(errorMsg: String) {
@@ -150,28 +92,14 @@ class NetworkActivity : ComponentActivity(), INetworkView {
     override fun showLoadingScreen() {
         errorMsg.value = ""
         isContactsLoading.value = true
-        headerText.value = ""
+       // friendListState.headerText.value = EMPTY_STRING
     }
 }
 
+@Preview
 @Composable
-fun FriendListComponent(
-    modifier: Modifier = Modifier,
-    itemModifier: Modifier = Modifier,
-    headerText: String,
-    friendList: List<Friend>
-) {
-    Column(
-        modifier = modifier.then(Modifier.fillMaxSize()),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        HorizontalFriendListStructure(
-            modifier = itemModifier,
-            headerText = headerText,
-            friendList = friendList
-        )
+fun NetworkLayout() {
 
-    }
 }
 
 @Composable

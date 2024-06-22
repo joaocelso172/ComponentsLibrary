@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import entity.Transaction
+import org.example.project.feature.presentation.NetworkActivity
 
 class MainActivity : ComponentActivity() {
 

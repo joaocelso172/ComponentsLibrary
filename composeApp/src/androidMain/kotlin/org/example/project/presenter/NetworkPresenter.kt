@@ -7,8 +7,8 @@ import feature.presenter.INetworkPresenter
 class NetworkPresenter(private val view: INetworkView) : INetworkPresenter {
 
 
-    override fun fillNetworkComponent(mutableListFriend: MutableList<Friend>) {
-        view.fillNetworkComponent(mutableListFriend)
+    override fun fillNetworkComponent(listFriend: List<Friend>) {
+        view.fillNetworkComponent(listFriend)
     }
 
     override fun showErrorScreen() {
