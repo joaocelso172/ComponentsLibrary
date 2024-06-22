@@ -14,12 +14,18 @@ androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
 compose = "1.6.0"
 compose-plugin = "1.5.12"
+kotlin-ksp = "1.8.10-1.0.9"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlin1922 = "1.9.22"
 kotlinxCoroutinesCore = "1.8.0"
+koin-viewmodel = "3.4.0"
+koin = "3.4.0"
 
 [libraries]
+
+kotlin-koin = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+kotlin-koin-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koin-viewmodel" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -37,9 +43,11 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinxCoroutinesCore" }
 
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinKsp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin1922" }

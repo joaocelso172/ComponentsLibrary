@@ -3,7 +3,6 @@ package org.example.project.feature.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -45,10 +44,11 @@ import entity.Contacts
 import feature.presentation.INetworkView
 import org.example.project.common.presentation.components.ContactsComponentRender
 import org.example.project.feature.viewmodel.ContactsViewModel
+import org.example.project.initKoin
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.startKoin
 
 class NetworkActivity : ComponentActivity(), INetworkView {
-    private val componentViewModel: ContactsViewModel by viewModels()
-
     private var isContactsLoading = mutableStateOf(false)
     private var errorMsg = mutableStateOf(EMPTY_STRING)
 
@@ -56,11 +56,11 @@ class NetworkActivity : ComponentActivity(), INetworkView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val componentViewModel: ContactsViewModel by viewModel()
         requestPermission()
 
         setContent {
-            UserScreen(networkViewModel = componentViewModel)
+            NetworkScreen(componentViewModel)
         }
     }
 

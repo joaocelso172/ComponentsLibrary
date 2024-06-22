@@ -9,10 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.common.presentation.components.ContactsComponentRender
-import org.example.project.domain.ContactsRepository
 
-class ContactsViewModel : ViewModel() {
-    private val contactsRepository: IContactsRepository = ContactsRepository()
+class ContactsViewModel(private val repository: IContactsRepository) : ViewModel() {
     private val _contactsState = MutableStateFlow<ContactsState>(ContactsState.Loading)
     val contactsState: StateFlow<ContactsState> = _contactsState.asStateFlow()
 
@@ -24,7 +22,7 @@ class ContactsViewModel : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 delay(1500)
-                _contactsState.value = ContactsState.Success(contactsRender = ContactsComponentRender(headerText = "Selecione o contato", contactsRepository.getContacts() ))
+                _contactsState.value = ContactsState.Success(contactsRender = ContactsComponentRender(headerText = "Selecione o contato", repository.getContacts() ))
             }.onFailure {
                 _contactsState.value = ContactsState.Error( "Falha ao carregar contatos" )
             }
@@ -33,7 +31,7 @@ class ContactsViewModel : ViewModel() {
 
     sealed class ContactsState {
 
-        object Loading : ContactsState()
+        data object Loading : ContactsState()
         data class Success(val contactsRender: ContactsComponentRender) : ContactsState()
         data class Error(val message: String) : ContactsState()
     }

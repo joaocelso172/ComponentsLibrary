@@ -8,8 +8,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.example.project.common.presentation.components.ContactsComponent
 
 @Composable
-fun UserScreen(networkViewModel: ContactsViewModel = viewModel()) {
-    val friendListState by networkViewModel.contactsState.collectAsState()
+fun NetworkScreen(componentViewModel: ContactsViewModel = viewModel()) {
+    val friendListState by componentViewModel.contactsState.collectAsState()
 
     when (friendListState) {
         is ContactsViewModel.ContactsState.Success -> {

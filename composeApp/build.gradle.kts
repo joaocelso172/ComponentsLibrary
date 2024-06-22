@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    //kotlin("jvm") version "1.9.21"
 }
 
 kotlin {
@@ -23,10 +22,16 @@ kotlin {
         val desktopMain by getting
         
         androidMain.dependencies {
+            /**Compose*/
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.activity.compose.viewmodel)
             implementation (libs.androidx.activity.material.icons)
+            /**Compose ViewModel*/
+            implementation(libs.androidx.activity.compose.viewmodel)
+            /**DI*/
+            implementation(libs.kotlin.koin)
+//            implementation(libs.kotlin.koin.viewmodel)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
