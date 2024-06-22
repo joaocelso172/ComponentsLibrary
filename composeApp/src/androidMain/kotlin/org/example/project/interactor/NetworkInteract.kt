@@ -9,9 +9,13 @@ import feature.domain.IContactsRepository
 import feature.presentation.INetworkView
 import feature.presenter.INetworkPresenter
 import org.example.project.domain.ContactsRepository
+import org.example.project.feature.viewmodel.ContactsViewModel
 import org.example.project.presenter.NetworkPresenter
 import org.example.project.utils.PermissionUtils
 
+@Deprecated( message = "The currently pattern is MVVM",
+    replaceWith = ReplaceWith("Use ContactsViewModel instead"),
+    level = DeprecationLevel.WARNING)
 class NetworkInteract(view: INetworkView, private val context: ComponentActivity) : INetworkInteract {
     val presenter: INetworkPresenter = NetworkPresenter(view)
     private val repository: IContactsRepository = ContactsRepository(context.contentResolver)

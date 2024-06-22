@@ -1,4 +1,5 @@
 package org.example.project.common.presentation.components
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +31,8 @@ import org.example.project.feature.presentation.splitMaxScreenWidthByItems
 
 
 @Composable
-fun ContactsComponent(render: ContactsComponentRender){
-    Text(text = render.headerText, modifier =  Modifier.padding(4.dp))
+fun ContactsComponent(render: ContactsComponentRender) {
+    Text(text = render.headerText, modifier = Modifier.padding(4.dp))
 
     LazyRow(
         modifier = Modifier.then(
@@ -80,23 +81,19 @@ fun ContactsComponent(render: ContactsComponentRender){
 }
 
 @Composable
-fun LoadingColumnList(modifier: Modifier = Modifier, showLoadingSkeleton: Boolean = true) {
-    val showLoading by remember { mutableStateOf(showLoadingSkeleton) }
-
-    if (showLoading) {
-        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Box(contentAlignment = Alignment.Center) {
-                LazyRowFilling(
-                    columnModifier = Modifier.shimmerBackground(),
-                    count = splitMaxScreenWidthByItems(70f)
-                )
-            }
+fun LoadingColumnList(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Box(contentAlignment = Alignment.Center) {
+            LazyRowFilling(
+                columnModifier = Modifier.shimmerBackground(),
+                count = splitMaxScreenWidthByItems(70f)
+            )
         }
     }
 }
 
 @Preview
 @Composable
-fun FriendListPreview(){
-   // FriendListComponent(state = FriendListComponentState("Friend List Component", mutableListOf(Friend("João Celso", "11 975660479", "JC"), )))
+fun FriendListPreview() {
+    // FriendListComponent(state = FriendListComponentState("Friend List Component", mutableListOf(Friend("João Celso", "11 975660479", "JC"), )))
 }
