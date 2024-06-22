@@ -1,7 +1,9 @@
 package org.example.project.common.presentation.components
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,21 +24,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import entity.Friend
+import org.example.project.feature.presentation.LazyRowFilling
+import org.example.project.feature.presentation.shimmerBackground
+import org.example.project.feature.presentation.splitMaxScreenWidthByItems
 
 
 @Composable
-fun FriendListComponent(componentState: FriendListComponentState){
-//    val state by remember{ mutableStateOf(componentState) }
-
-    Text(text = componentState.headerText, modifier =  Modifier.padding(4.dp))
+fun ContactsComponent(render: ContactsComponentRender){
+    Text(text = render.headerText, modifier =  Modifier.padding(4.dp))
 
     LazyRow(
         modifier = Modifier.then(
             Modifier.fillMaxWidth()
         )
     ) {
-        componentState.friendList.apply {
+        render.contactsList.apply {
             items(size) {
                 Column(
                     verticalArrangement = Arrangement.Bottom
@@ -77,6 +79,21 @@ fun FriendListComponent(componentState: FriendListComponentState){
     }
 }
 
+@Composable
+fun LoadingColumnList(modifier: Modifier = Modifier, showLoadingSkeleton: Boolean = true) {
+    val showLoading by remember { mutableStateOf(showLoadingSkeleton) }
+
+    if (showLoading) {
+        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+            Box(contentAlignment = Alignment.Center) {
+                LazyRowFilling(
+                    columnModifier = Modifier.shimmerBackground(),
+                    count = splitMaxScreenWidthByItems(70f)
+                )
+            }
+        }
+    }
+}
 
 @Preview
 @Composable

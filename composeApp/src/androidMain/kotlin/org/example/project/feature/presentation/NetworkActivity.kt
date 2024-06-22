@@ -37,36 +37,27 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import commons.Constants.CONTACTS_HEADER_TEXT
 import commons.Constants.EMPTY_STRING
-import entity.Friend
-import feature.INetworkInteract
-import org.example.project.interactor.NetworkInteract
+import entity.Contacts
 import feature.presentation.INetworkView
-import org.example.project.common.presentation.components.FriendListComponentState
-import org.example.project.feature.viewmodel.FriendListViewModel
+import org.example.project.common.presentation.components.ContactsComponentRender
+import org.example.project.feature.viewmodel.ContactsViewModel
 
 class NetworkActivity : ComponentActivity(), INetworkView {
-    private val interact: INetworkInteract by lazy {
-        NetworkInteract(this, this)
-    }
-    private val componentViewModel: FriendListViewModel by viewModels()
+    private val componentViewModel: ContactsViewModel by viewModels()
 
     private var isContactsLoading = mutableStateOf(false)
     private var errorMsg = mutableStateOf(EMPTY_STRING)
 
-    private val friendListState = FriendListComponentState()
+    private val friendListState = ContactsComponentRender()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestPermission()
-
-        //val state = FriendListComponentState(headerText, friendMutableList)
 
         setContent {
             UserScreen(networkViewModel = componentViewModel)
@@ -75,13 +66,12 @@ class NetworkActivity : ComponentActivity(), INetworkView {
 
     override fun requestPermission() {
         isContactsLoading.value = true
-        interact.retrieveContractList()
     }
 
-    override fun fillNetworkComponent(friendList: List<Friend>) {
+    override fun fillNetworkComponent(contactsList: List<Contacts>) {
         isContactsLoading.value = false
 //        friendListState.headerText.value = CONTACTS_HEADER_TEXT
-        friendListState.friendList.addAll(friendList)
+        friendListState.contactsList.addAll(contactsList)
     }
 
     override fun showErrorScreen(errorMsg: String) {
@@ -96,17 +86,11 @@ class NetworkActivity : ComponentActivity(), INetworkView {
     }
 }
 
-@Preview
-@Composable
-fun NetworkLayout() {
-
-}
-
 @Composable
 fun HorizontalFriendListStructure(
     modifier: Modifier = Modifier,
     headerText: String,
-    friendList: List<Friend>
+    contactsList: List<Contacts>
 ) {
     Column(
         modifier = Modifier.padding(12.dp)
@@ -118,11 +102,11 @@ fun HorizontalFriendListStructure(
                 Modifier.fillMaxWidth()
             )
         ) {
-            items(friendList.size) {
+            items(contactsList.size) {
                 Column(
                     verticalArrangement = Arrangement.Bottom
                 ) {
-                    friendList[it].let {
+                    contactsList[it].let {
                         Column(verticalArrangement = Arrangement.Top) {
                             Surface(
                                 shape = RoundedCornerShape(12.dp),

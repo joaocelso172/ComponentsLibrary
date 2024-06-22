@@ -1,8 +1,8 @@
 package feature.presenter
 
-import entity.Friend
+import entity.Contacts
 
 interface INetworkPresenter {
-    fun fillNetworkComponent(listFriend: List<Friend>)
+    fun fillNetworkComponent(listContacts: List<Contacts>)
     fun showErrorScreen()
 }

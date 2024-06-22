@@ -3,22 +3,22 @@ package org.example.project.interactor
 import android.Manifest
 import androidx.activity.ComponentActivity
 import commons.domain.Callback
-import entity.Friend
+import entity.Contacts
 import feature.INetworkInteract
-import feature.domain.INetworkRepository
+import feature.domain.IContactsRepository
 import feature.presentation.INetworkView
 import feature.presenter.INetworkPresenter
-import org.example.project.domain.NetworkRepository
+import org.example.project.domain.ContactsRepository
 import org.example.project.presenter.NetworkPresenter
 import org.example.project.utils.PermissionUtils
 
 class NetworkInteract(view: INetworkView, private val context: ComponentActivity) : INetworkInteract {
     val presenter: INetworkPresenter = NetworkPresenter(view)
-    private val repository: INetworkRepository = NetworkRepository(context.contentResolver)
+    private val repository: IContactsRepository = ContactsRepository(context.contentResolver)
 
     override fun retrieveContractList() {
-        val callback: Callback<List<Friend>> = object : Callback<List<Friend>>{
-            override fun onSuccess(result: List<Friend>) {
+        val callback: Callback<List<Contacts>> = object : Callback<List<Contacts>>{
+            override fun onSuccess(result: List<Contacts>) {
                 presenter.fillNetworkComponent(result)
             }
 
@@ -31,7 +31,7 @@ class NetworkInteract(view: INetworkView, private val context: ComponentActivity
         requestReadContactPermission(callback)
     }
 
-    private fun requestReadContactPermission(callback: Callback<List<Friend>>){
+    private fun requestReadContactPermission(callback: Callback<List<Contacts>>){
         PermissionUtils.requestPermissionLauncher(context, object : Callback<String>{
             override fun onSuccess(result: String) {
                 requestContractList(callback)
@@ -43,7 +43,7 @@ class NetworkInteract(view: INetworkView, private val context: ComponentActivity
         }).launch(Manifest.permission.READ_CONTACTS)
     }
 
-    private fun requestContractList(callback: Callback<List<Friend>>){
+    private fun requestContractList(callback: Callback<List<Contacts>>){
         runCatching {
             repository.sendContactQuery(callback)
         }.onFailure {
