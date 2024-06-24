@@ -1,4 +1,4 @@
-package feature.domain
+package feature.domain.repository
 
 import commons.domain.Callback
 import entity.Contacts

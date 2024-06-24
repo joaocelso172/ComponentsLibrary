@@ -5,11 +5,10 @@ import androidx.activity.ComponentActivity
 import commons.domain.Callback
 import entity.Contacts
 import feature.INetworkInteract
-import feature.domain.IContactsRepository
+import feature.domain.repository.IContactsRepository
 import feature.presentation.INetworkView
 import feature.presenter.INetworkPresenter
-import org.example.project.domain.ContactsRepository
-import org.example.project.feature.viewmodel.ContactsViewModel
+import org.example.project.feature.data.ContactsRepository
 import org.example.project.presenter.NetworkPresenter
 import org.example.project.utils.PermissionUtils
 

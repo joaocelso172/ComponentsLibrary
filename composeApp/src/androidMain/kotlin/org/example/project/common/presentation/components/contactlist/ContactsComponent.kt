@@ -1,8 +1,5 @@
-package org.example.project.feature.presentation
+package org.example.project.common.presentation.components.contactlist
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -23,7 +20,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -36,104 +32,56 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import commons.Constants.EMPTY_STRING
-import entity.Contacts
-import feature.presentation.INetworkView
-import org.example.project.common.presentation.components.ContactsComponentRender
-import org.example.project.feature.viewmodel.ContactsViewModel
-import org.example.project.initKoin
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.startKoin
 
-class NetworkActivity : ComponentActivity(), INetworkView {
-    private var isContactsLoading = mutableStateOf(false)
-    private var errorMsg = mutableStateOf(EMPTY_STRING)
-
-    private val friendListState = ContactsComponentRender()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val componentViewModel: ContactsViewModel by viewModel()
-        requestPermission()
-
-        setContent {
-            NetworkScreen(componentViewModel)
-        }
-    }
-
-    override fun requestPermission() {
-        isContactsLoading.value = true
-    }
-
-    override fun fillNetworkComponent(contactsList: List<Contacts>) {
-        isContactsLoading.value = false
-//        friendListState.headerText.value = CONTACTS_HEADER_TEXT
-        friendListState.contactsList.addAll(contactsList)
-    }
-
-    override fun showErrorScreen(errorMsg: String) {
-        isContactsLoading.value = false
-        this.errorMsg.value = errorMsg
-    }
-
-    override fun showLoadingScreen() {
-        errorMsg.value = ""
-        isContactsLoading.value = true
-       // friendListState.headerText.value = EMPTY_STRING
-    }
-}
 
 @Composable
-fun HorizontalFriendListStructure(
-    modifier: Modifier = Modifier,
-    headerText: String,
-    contactsList: List<Contacts>
-) {
-    Column(
-        modifier = Modifier.padding(12.dp)
-    ) {
-        Text(headerText, Modifier.padding(4.dp))
+fun ContactsComponent(render: ContactsComponentRender) {
+    Column {
+        Text(text = render.headerText, modifier = Modifier.padding(4.dp))
 
         LazyRow(
-            modifier = modifier.then(
+            modifier = Modifier.then(
                 Modifier.fillMaxWidth()
             )
         ) {
-            items(contactsList.size) {
-                Column(
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    contactsList[it].let {
-                        Column(verticalArrangement = Arrangement.Top) {
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color.LightGray,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ) {
+            render.contactsList.apply {
+                items(size) {
+                    Column(
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        this@apply[it].let {
+                            Column(verticalArrangement = Arrangement.Top) {
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = Color.LightGray,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                ) {
+                                    Text(
+                                        text = it.aka,
+                                        letterSpacing = TextUnit(2f, TextUnitType.Sp),
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(16.dp)
+                                            .defaultMinSize(minWidth = 20.dp)
+                                    )
+                                }
+
                                 Text(
-                                    text = it.aka,
-                                    letterSpacing = TextUnit(2f, TextUnitType.Sp),
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
+                                    text = it.name,
+                                    softWrap = true,
+                                    minLines = 2,
+                                    maxLines = 2,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(16.dp)
-                                        .defaultMinSize(minWidth = 20.dp)
+                                    modifier = Modifier.fillParentMaxWidth(0.2f)
+                                        .padding(horizontal = 4.dp),
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
-
-                            Text(
-                                text = it.name,
-                                softWrap = true,
-                                minLines = 2,
-                                maxLines = 2,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillParentMaxWidth(0.2f)
-                                    .padding(horizontal = 4.dp),
-                                overflow = TextOverflow.Ellipsis
-                            )
                         }
                     }
                 }
@@ -149,7 +97,7 @@ fun ErrorStateColumnList(modifier: Modifier = Modifier, errorMsg: String) {
             Box(contentAlignment = Alignment.Center) {
                 val fillWidthItemsCount = splitMaxScreenWidthByItems(70f)
                 LazyRowFilling(
-                    textModifier = Modifier.background(
+                    modifier = Modifier.background(
                         color = Color.Red,
                         shape = RoundedCornerShape(12.dp)
                     ),
@@ -183,9 +131,23 @@ fun ErrorStateColumnList(modifier: Modifier = Modifier, errorMsg: String) {
     }
 }
 
+
+@Composable
+fun LoadingColumnList(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Box(contentAlignment = Alignment.Center) {
+            LazyRowFilling(
+                columnModifier = Modifier.shimmerBackground(),
+                count = splitMaxScreenWidthByItems(70f)
+            )
+        }
+    }
+}
+
+
 @Composable
 fun LazyRowFilling(
-    textModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     columnModifier: Modifier = Modifier,
     count: Int,
     text: String = ""
@@ -205,7 +167,7 @@ fun LazyRowFilling(
                         maxLines = 1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
-                            .defaultMinSize(minWidth = 20.dp).then(textModifier)
+                            .defaultMinSize(minWidth = 20.dp).then(modifier)
                     )
                 }
                 Text(
@@ -223,19 +185,6 @@ fun LazyRowFilling(
     }
 }
 
-@Composable
-fun LoadingColumnList(modifier: Modifier = Modifier, showLoadingSkeleton: Boolean = true) {
-    if (showLoadingSkeleton) {
-        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Box(contentAlignment = Alignment.Center) {
-                LazyRowFilling(
-                    columnModifier = Modifier.shimmerBackground(),
-                    count = splitMaxScreenWidthByItems(70f)
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun splitMaxScreenWidthByItems(itemWidth: Float): Int {
@@ -277,4 +226,10 @@ fun Modifier.shimmerBackground(
         tileMode = TileMode.Mirror,
     )
     return@composed this.then(background(brush, shape))
+}
+
+@Preview
+@Composable
+fun FriendListPreview() {
+    // FriendListComponent(state = FriendListComponentState("Friend List Component", mutableListOf(Friend("João Celso", "11 975660479", "JC"), )))
 }

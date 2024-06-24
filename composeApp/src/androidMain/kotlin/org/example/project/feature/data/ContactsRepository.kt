@@ -1,4 +1,4 @@
-package org.example.project.domain
+package org.example.project.feature.data
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -7,18 +7,16 @@ import android.provider.ContactsContract
 import commons.domain.Callback
 import entity.Contacts
 import extensions.Extensions.getAlias
-import feature.domain.IContactsRepository
+import feature.domain.repository.IContactsRepository
 
-class ContactsRepository(private val contentResolver: ContentResolver? = null) : IContactsRepository {
+class ContactsRepository(private val contentResolver: ContentResolver? = null) :
+    IContactsRepository {
 
     @SuppressLint("InlinedApi")
     private val PROJECTION: Array<out String> = arrayOf(
         ContactsContract.Data._ID,
-        // The primary display name
         ContactsContract.Data.DISPLAY_NAME_PRIMARY,
-        // The contact's _ID, to construct a content URI
         ContactsContract.Data.CONTACT_ID,
-        // The contact's LOOKUP_KEY, to construct a content URI
         ContactsContract.Data.LOOKUP_KEY,
         ContactsContract.Data.DATA1
     )

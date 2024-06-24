@@ -1,4 +1,4 @@
-package org.example.project.common.presentation.components
+package org.example.project.common.presentation.components.contactlist
 
 import entity.Contacts
 
