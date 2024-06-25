@@ -5,6 +5,7 @@ import feature.domain.repository.IPermissionRepository
 import org.example.project.feature.data.ContactsRepository
 import org.example.project.feature.data.PermissionRepository
 import org.example.project.feature.domain.usecase.CheckPermissionUseCase
+import org.example.project.feature.domain.usecase.GetContactsUseCase
 import org.example.project.feature.domain.usecase.RequestPermissionUseCase
 import org.example.project.feature.viewmodel.ContactsViewModel
 import org.example.project.feature.viewmodel.PermissionViewModel
@@ -15,11 +16,15 @@ import org.koin.dsl.module
 
 fun initKoin(): Module{
     return module {
+        //Component Activity
         single<IContactsRepository> { ContactsRepository(androidContext().contentResolver) }
+        single<GetContactsUseCase> { GetContactsUseCase(get()) }
         single<IPermissionRepository> { PermissionRepository() }
+        viewModel { ContactsViewModel(get()) }
+        //PermissionActivity
         single<CheckPermissionUseCase> { CheckPermissionUseCase(get()) }
         single<RequestPermissionUseCase> { RequestPermissionUseCase(get()) }
-        viewModel { ContactsViewModel(get()) }
+        single<RequestPermissionUseCase> { RequestPermissionUseCase(get()) }
         viewModel { PermissionViewModel(get(), get()) }
     }
 }

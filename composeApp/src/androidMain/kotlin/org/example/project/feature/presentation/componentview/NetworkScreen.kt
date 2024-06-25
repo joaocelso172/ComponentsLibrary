@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import org.example.project.feature.viewmodel.ContactsViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.example.project.common.presentation.components.contactlist.ContactsComponent
-import org.example.project.common.presentation.components.contactlist.ContactsComponentState
+import org.example.project.feature.presentation.state.ContactsComponentState
 import org.example.project.common.presentation.components.contactlist.LoadingColumnList
 
 @Composable

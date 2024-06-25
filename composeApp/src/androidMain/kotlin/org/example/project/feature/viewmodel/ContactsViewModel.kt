@@ -9,10 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.project.common.presentation.components.contactlist.ContactsComponentRender
-import org.example.project.common.presentation.components.contactlist.ContactsComponentState
+import org.example.project.feature.domain.usecase.GetContactsUseCase
+import org.example.project.feature.presentation.state.ContactsComponentState
 
-class ContactsViewModel(private val repository: IContactsRepository) : ViewModel() {
-    private val _contactsComponentState = MutableStateFlow<ContactsComponentState>(ContactsComponentState.Loading)
+class ContactsViewModel(private val getContactsUseCase: GetContactsUseCase) : ViewModel() {
+    private val _contactsComponentState = MutableStateFlow<ContactsComponentState>(
+        ContactsComponentState.Loading)
     val contactsComponentState: StateFlow<ContactsComponentState> = _contactsComponentState.asStateFlow()
 
     init {
@@ -23,11 +25,15 @@ class ContactsViewModel(private val repository: IContactsRepository) : ViewModel
         viewModelScope.launch {
             runCatching {
                 delay(1500)
-                _contactsComponentState.value = ContactsComponentState.Success(contactsRender = ContactsComponentRender(headerText = "Selecione o contato", repository.getContacts() ))
+                _contactsComponentState.value = ContactsComponentState.Success(contactsRender = ContactsComponentRender(
+                    headerText = "Selecione o contato",
+                    getContactsUseCase.invoke()))
             }.onFailure {
                 _contactsComponentState.value = ContactsComponentState.Error( "Falha ao carregar contatos" )
             }
         }
     }
+
+
 
 }

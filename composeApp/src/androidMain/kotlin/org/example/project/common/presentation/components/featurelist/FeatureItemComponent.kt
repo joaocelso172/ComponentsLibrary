@@ -11,20 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun FeatureItem(
-    startIcon: ImageVector,
-    text: String,
-    trailingIcon: ImageVector,
+    render: FeatureItemComponentRender,
     modifier: Modifier = Modifier,
     startIconModifier: Modifier = Modifier,
     trailingIconModifier: Modifier = Modifier,
-    textColor: Color = Color.Black,
-    iconSize: Dp = 24.dp,
     startIconTint: Color = LocalContentColor.current,
     trailingIconTint: Color = LocalContentColor.current
 ) {
@@ -33,19 +27,20 @@ fun FeatureItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = startIcon,
+            imageVector = render.startIcon,
             contentDescription = null,
-            modifier = startIconModifier.size(iconSize).then(Modifier.padding(end = 4.dp)),
+            modifier = startIconModifier.size(render.iconSize).then(Modifier.padding(end = 4.dp)),
             tint = startIconTint)
         Text(
-            text = text,
-            color = textColor
+            text = render.text,
+            color = render.textColor
+
         )
         Spacer(Modifier.weight(1f))
         Icon(
-            imageVector = trailingIcon,
+            imageVector = render.trailingIcon,
             contentDescription = null,
-            modifier = trailingIconModifier.size(iconSize),
+            modifier = trailingIconModifier.size(render.iconSize),
             tint = trailingIconTint
         )
     }
