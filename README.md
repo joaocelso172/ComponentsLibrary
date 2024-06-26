@@ -1,3 +1,7 @@
+## Project
+This project is a Component Catalog, it's a study-focused library that applies MVVM pattern + Clean Code principles 
+
+## About KMM
 This is a Kotlin Multiplatform project targeting Android, iOS, Desktop.
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
