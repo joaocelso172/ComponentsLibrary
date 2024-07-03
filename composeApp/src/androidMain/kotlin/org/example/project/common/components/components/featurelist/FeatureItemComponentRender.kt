@@ -1,4 +1,4 @@
-package org.example.project.common.presentation.components.featurelist
+package org.example.project.common.components.components.featurelist
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector

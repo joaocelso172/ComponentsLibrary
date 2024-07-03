@@ -1,4 +1,4 @@
-package org.example.project.common.presentation.components.contactlist
+package org.example.project.common.components.components.contactlist
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode

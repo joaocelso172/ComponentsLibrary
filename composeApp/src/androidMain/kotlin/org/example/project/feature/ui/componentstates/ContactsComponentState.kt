@@ -1,6 +1,6 @@
-package org.example.project.feature.presentation.state
+package org.example.project.feature.ui.componentstates
 
-import org.example.project.common.presentation.components.contactlist.ContactsComponentRender
+import org.example.project.common.components.components.contactlist.ContactsComponentRender
 
 sealed class ContactsComponentState {
 

@@ -1,4 +1,4 @@
-package org.example.project.common.presentation.components.featurelist
+package org.example.project.common.components.components.featurelist
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

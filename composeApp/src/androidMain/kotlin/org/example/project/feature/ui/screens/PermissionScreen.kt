@@ -1,11 +1,11 @@
-package org.example.project.feature.presentation.startview
+package org.example.project.feature.ui.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.example.project.common.presentation.components.featurelist.FeatureItem
-import org.example.project.feature.presentation.state.FeatureItemComponentState
+import org.example.project.common.components.components.featurelist.FeatureItem
+import org.example.project.feature.ui.componentstates.FeatureItemComponentState
 import org.example.project.feature.viewmodel.PermissionViewModel
 
 @Composable

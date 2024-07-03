@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.example.project.common.presentation.components.featurelist.FeatureItemComponentRender
-import org.example.project.feature.presentation.state.FeatureItemComponentState
+import org.example.project.common.components.components.featurelist.FeatureItemComponentRender
+import org.example.project.feature.ui.componentstates.FeatureItemComponentState
 import org.example.project.feature.domain.usecase.CheckPermissionUseCase
 import org.example.project.feature.domain.usecase.RequestPermissionUseCase
 
@@ -35,18 +35,21 @@ class PermissionViewModel(
 
     fun checkPermission() {
         _featureListState.value = if (checkPermissionUseCase()) {
-            FeatureItemComponentState.Granted(FeatureItemComponentRender(
+            FeatureItemComponentState.Granted(
+                FeatureItemComponentRender(
                 startIcon = Icons.Filled.Contacts,
                 text = "Contatos",
                 trailingIcon = iconStatus
-            ))
+            )
+            )
         } else {
             FeatureItemComponentState.Denied(
                 FeatureItemComponentRender(
                     startIcon = Icons.Filled.Contacts,
                     text = "Contatos",
                     trailingIcon = iconStatus
-                ))
+                )
+            )
         }
     }
 

@@ -1,6 +1,6 @@
-package org.example.project.feature.presentation.state
+package org.example.project.feature.ui.componentstates
 
-import org.example.project.common.presentation.components.featurelist.FeatureItemComponentRender
+import org.example.project.common.components.components.featurelist.FeatureItemComponentRender
 
 sealed class FeatureItemComponentState {
     data object Unknown :
